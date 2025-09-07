@@ -1,10 +1,7 @@
 services:
   - type: web
     name: backend-app
-    env: java
-    buildCommand: mvn clean package -DskipTests
-    startCommand: java -jar target/Backend-0.0.1-SNAPSHOT.jar
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
     plan: free
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: production
