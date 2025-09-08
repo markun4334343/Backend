@@ -13,9 +13,9 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String title; // This will be the "text" from frontend
     private String description;
-    private boolean done;
+    private boolean done; // This will be the "completed" from frontend
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -75,6 +75,24 @@ public class Task {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    // Add this method to match frontend expectation for "text" field
+    public String getText() {
+        return title;
+    }
+
+    public void setText(String text) {
+        this.title = text;
+    }
+
+    // Add this method to match frontend expectation for "completed" field
+    public boolean isCompleted() {
+        return done;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.done = completed;
     }
 
     @Override
