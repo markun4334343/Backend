@@ -65,11 +65,3 @@ public class TaskController {
     }
 }
 
-// ADD THIS ROOT CONTROLLER (in the same file but outside TaskController)
-@RestController
-class RootController {
-    @GetMapping("/")
-    public String root() {
-        return "Task Backend is running! Use /api/tasks to access tasks.";
-    }
-}
