@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "")  // CHANGED FROM "*" TO EMPTY STRING
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
 public class TaskController {
 
     private final TaskService taskService;
@@ -28,10 +28,10 @@ public class TaskController {
     // POST /api/tasks - Create a new task
     @PostMapping("/tasks")
     public Task createTask(@RequestBody Task newTask) {
-        // Create a new task with title (use title as text for your frontend)
         Task task = new Task();
-        task.setTitle(newTask.getTitle()); // This will be the "text" from frontend
-        task.setDescription(""); // Empty description for now
+        task.setTitle(newTask.getTitle());
+        task.setDescription(newTask.getDescription() != null ? newTask.getDescription() : "");
+        task.setDone(newTask.isDone());
         return taskService.createTask(task);
     }
 
@@ -47,7 +47,14 @@ public class TaskController {
         Task existingTask = taskService.getTaskById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
+        if (taskUpdate.getTitle() != null) {
+            existingTask.setTitle(taskUpdate.getTitle());
+        }
+        if (taskUpdate.getDescription() != null) {
+            existingTask.setDescription(taskUpdate.getDescription());
+        }
         existingTask.setDone(taskUpdate.isDone());
+
         return taskService.updateTask(id, existingTask);
     }
 
@@ -55,5 +62,14 @@ public class TaskController {
     @GetMapping("/health")
     public String health() {
         return "Backend is running!";
+    }
+}
+
+// ADD THIS ROOT CONTROLLER (in the same file but outside TaskController)
+@RestController
+class RootController {
+    @GetMapping("/")
+    public String root() {
+        return "Task Backend is running! Use /api/tasks to access tasks.";
     }
 }
