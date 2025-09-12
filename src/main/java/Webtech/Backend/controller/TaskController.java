@@ -19,6 +19,17 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    // ADD THIS ROOT ENDPOINT - RIGHT AFTER THE CONSTRUCTOR
+    @GetMapping("/")
+    public String home() {
+        return "Task Backend API is running! Available endpoints: " +
+                "<br>/api/health - Health check" +
+                "<br>/api/tasks - Get all tasks" +
+                "<br>POST /api/tasks - Create new task" +
+                "<br>DELETE /api/tasks/{id} - Delete task" +
+                "<br>PATCH /api/tasks/{id} - Update task";
+    }
+
     // GET /api/tasks - Get all tasks
     @GetMapping("/tasks")
     public List<Task> getAllTasks() {
@@ -64,4 +75,3 @@ public class TaskController {
         return "Backend is running!";
     }
 }
-
