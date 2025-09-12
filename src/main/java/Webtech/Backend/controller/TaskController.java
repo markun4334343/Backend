@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "")  // CHANGED FROM "*" TO EMPTY STRING
 @RestController
@@ -36,13 +37,17 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
-    // POST /api/tasks - Create a new task
     @PostMapping("/tasks")
-    public Task createTask(@RequestBody Task newTask) {
+    public Task createTask(@RequestBody Map<String, Object> taskData) {
+        // Extract data from frontend format
+        String text = (String) taskData.get("text");
+        Boolean completed = (Boolean) taskData.get("completed");
+
         Task task = new Task();
-        task.setTitle(newTask.getTitle());
-        task.setDescription(newTask.getDescription() != null ? newTask.getDescription() : "");
-        task.setDone(newTask.isDone());
+        task.setTitle(text != null ? text : "");
+        task.setDescription("");
+        task.setDone(completed != null ? completed : false);
+
         return taskService.createTask(task);
     }
 
@@ -52,19 +57,17 @@ public class TaskController {
         taskService.deleteTask(id);
     }
 
-    // PATCH /api/tasks/{id} - Update task completion status
     @PatchMapping("/tasks/{id}")
-    public Task updateTaskCompletion(@PathVariable Long id, @RequestBody Task taskUpdate) {
+    public Task updateTaskCompletion(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         Task existingTask = taskService.getTaskById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
-        if (taskUpdate.getTitle() != null) {
-            existingTask.setTitle(taskUpdate.getTitle());
+        if (updates.containsKey("text")) {
+            existingTask.setTitle((String) updates.get("text"));
         }
-        if (taskUpdate.getDescription() != null) {
-            existingTask.setDescription(taskUpdate.getDescription());
+        if (updates.containsKey("completed")) {
+            existingTask.setDone((Boolean) updates.get("completed"));
         }
-        existingTask.setDone(taskUpdate.isDone());
 
         return taskService.updateTask(id, existingTask);
     }
