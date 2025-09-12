@@ -39,16 +39,27 @@ public class TaskController {
 
     @PostMapping("/tasks")
     public Task createTask(@RequestBody Map<String, Object> taskData) {
+        System.out.println("=== DEBUG: Received task data ===");
+        System.out.println("Raw data: " + taskData.toString());
+
         // Extract data from frontend format
         String text = (String) taskData.get("text");
         Boolean completed = (Boolean) taskData.get("completed");
+
+        System.out.println("Extracted text: " + text);
+        System.out.println("Extracted completed: " + completed);
 
         Task task = new Task();
         task.setTitle(text != null ? text : "");
         task.setDescription("");
         task.setDone(completed != null ? completed : false);
 
-        return taskService.createTask(task);
+        System.out.println("Task object before save: " + task.getTitle() + ", done: " + task.isDone());
+
+        Task savedTask = taskService.createTask(task);
+        System.out.println("Task saved with ID: " + savedTask.getId() + ", Title: " + savedTask.getTitle());
+
+        return savedTask;
     }
 
     // DELETE /api/tasks/{id} - Delete a task
@@ -76,5 +87,22 @@ public class TaskController {
     @GetMapping("/health")
     public String health() {
         return "Backend is running!";
+    }
+
+    @GetMapping("/tasks/debug")
+    public String debugAllTasks() {
+        List<Task> tasks = taskService.getAllTasks();
+        StringBuilder result = new StringBuilder();
+        result.append("Total tasks: ").append(tasks.size()).append("\n\n");
+
+        for (Task task : tasks) {
+            result.append("ID: ").append(task.getId())
+                    .append(", Title: '").append(task.getTitle())
+                    .append("', Done: ").append(task.isDone())
+                    .append(", Description: '").append(task.getDescription())
+                    .append("'\n");
+        }
+
+        return result.toString();
     }
 }
