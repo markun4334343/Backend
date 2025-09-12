@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "")  // CHANGED FROM "*" TO EMPTY STRING
+@CrossOrigin(origins = "*")  // CHANGED FROM "*" TO EMPTY STRING
 @RestController
 @RequestMapping("/api")
 public class TaskController {
